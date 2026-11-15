@@ -1,0 +1,21 @@
+# Terraform runtime and secrets
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+*.tfplan
+crash.log
+crash.*.log
+# Do not ignore .terraform.lock.hcl: commit provider lock versions.
+
+# Credentials and local tools
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.DS_Store
+__pycache__/
+*.pyc
+.venv/

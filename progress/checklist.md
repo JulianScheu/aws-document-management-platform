@@ -1,0 +1,22 @@
+# Project checklist
+
+- [ ] **Review and understand** requirements and two design alternatives
+- [ ] Confirm proposed architecture with instructor if necessary
+- [ ] Create GitHub repository and commit Week 1/2 drafts
+- [ ] Confirm AWS account/Region and enable cost alerts
+- [ ] `terraform init` and `terraform validate` successful
+- [ ] `terraform plan` reviewed, including monthly cost drivers
+- [ ] `terraform apply` creates network, instance, EBS and S3
+- [ ] Confirm EC2 appears as managed instance in SSM
+- [ ] Capture Terraform resources and network/storage evidence
+- [ ] Configure/mount separate EBS data volume
+- [ ] Deploy simple sample document application
+- [ ] Document upload/download demo using private S3
+- [ ] Demonstrate application data persistence after restart
+- [ ] Test backup and actual recovery
+- [ ] Capture CloudWatch logs/metrics
+- [ ] Security access restrictions tested
+- [ ] AWS Well-Architected review and cost evaluation
+- [ ] Update final diagram to reflect actual implementation
+- [ ] Final presentation and evidence
+- [ ] `terraform destroy` and billable-resource verification
