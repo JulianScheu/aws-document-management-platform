@@ -1,19 +1,29 @@
-# Verification plan (NOT YET RUN)
+# DocuWorks verification record — updated 2026-11-15
 
-| Test ID | Scenario | Evidence | Status |
-| --- | --- | --- | --- |
-| T-01 | `terraform fmt`, `init`, `validate` | CLI output | Not run |
-| T-02 | `terraform apply` | Resources and plan output | Not run |
-| T-03 | Network connectivity and admin access | SSM managed node/session | Not run |
-| T-04 | Block unauthorized inbound access | SG and connection result | Not run |
-| T-05 | Application reachable by authorized test user | Demo / HTTP result | Not run |
-| T-06 | Upload file to private S3 | Object present + app result | Not run |
-| T-07 | Retrieve uploaded document | File contents verified | Not run |
-| T-08 | Restart Linux instance and read app data | Persistence evidence | Not run |
-| T-09 | Replace/recreate app instance, reattach/restore data | Persistence evidence | Not run |
-| T-10 | Create EBS snapshot | Snapshot ID/time | Not run |
-| T-11 | Restore data from snapshot | Restored files checksum | Not run |
-| T-12 | CloudWatch logs / metrics | Screenshot and metric description | Not run |
-| T-13 | Terraform destroy and manual cost check | Resource inventory | Not run |
+Evidence below describes tests actually performed, not merely planned. All application documents are synthetic.
 
-Use synthetic test documents. Do not fabricate execution evidence.
+| ID | Scenario | Status / evidence |
+| --- | --- | --- |
+| T-01 | `terraform fmt`, `init`, `validate` | **PASS** — provider installed, validation successful |
+| T-02 | `terraform apply` | **PASS** — 18 added, 0 changed, 0 destroyed |
+| T-03 | EC2 and admin network connection | **PASS** — SSM Session Manager connected |
+| T-04 | Reject unauthorized inbound access | **PARTIAL** — security group configured without ingress; negative access test pending |
+| T-05 | Application via restricted browser tunnel | **PASS** — SSM forwarding Mac port 8765 to EC2 localhost:5000, HTTP 200 |
+| T-06 | Upload object to private S3 | **PASS** — upload via Flask and S3 HEAD check |
+| T-07 | Document retrieval and status updates | **PASS** — S3 GET and browser download contents checked; status changed |
+| T-08 | EC2 restart and EBS persistence | **PASS** — `/data` auto-mounted; SQLite records and S3 objects remained available |
+| T-09 | Replace EC2 and attach/restore data | **NOT TESTED** |
+| T-10 | Create EBS snapshot | **PASS** — `snap-0af6e7490c0fcb177`, status `completed` |
+| T-11 | Restore SQLite data from snapshot | **NOT TESTED** — snapshot existence does not prove recovery |
+| T-12 | CloudWatch logs / metrics | **NOT TESTED** — `journalctl` verifies local service log only |
+| T-13 | Terraform destroy and cost cleanup | **NOT DONE** — infrastructure retained for continuing the project |
+| T-14 | Automated Python tests | **PASS** — 3 unittest scenarios passed locally |
+| T-15 | Linux service availability | **PASS** — systemd active and Gunicorn returns HTTP 200 |
+
+## Remaining evidence to capture
+- Screenshots: EC2 instance, EBS volume and mount, S3 object, browser workflow, Terraform apply and snapshot status
+- Recovery test using a separate restored EBS volume
+- CloudWatch monitoring and logs
+- Security negative test
+- Confirm service starts after a second EC2 reboot (systemd auto-start)
+- Terraform and application provisioning reproducibility

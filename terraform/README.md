@@ -1,4 +1,4 @@
-# Terraform foundation — prepared but NOT deployed
+# Terraform foundation — deployed on 2026-11-15
 
 Creates:
 - One VPC / one subnet / Internet Gateway / routing
@@ -8,7 +8,7 @@ Creates:
 - Private S3 bucket with public access block, encryption and versioning
 - IAM role with scoped S3 access
 
-**Only the foundation is implemented.** The data volume is NOT formatted or mounted automatically, the sample document app is NOT deployed, and there is no staff-facing HTTPS/authentication. These are the next steps.
+**Verified deployment:** `terraform apply` created 18 AWS resources in `eu-central-1` on 2026-11-15. An 8 GB XFS EBS volume was subsequently mounted persistently at `/data`; the Flask app was deployed manually with Python 3.12, Gunicorn and systemd. The app stores metadata in SQLite on EBS and document objects in private S3. **Important:** Linux provisioning is not yet automated or reproducible from Terraform alone. There is still no employee-facing authentication/HTTPS endpoint; SSM port forwarding is used for restricted demo access. Recovery and CloudWatch monitoring are pending.
 
 ## Prerequisites
 - Terraform CLI installed
