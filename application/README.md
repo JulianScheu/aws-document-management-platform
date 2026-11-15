@@ -1,10 +1,10 @@
-# DocuWorks application — first working prototype
+# DocuWorks application — working proof of concept
 
-A small document register for an industrial document-processing workflow. Staff can upload a test document, search by title/file name, download it and change its processing status (`RECEIVED`, `IN_REVIEW`, `PROCESSED`).
+A small document register for a synthetic industrial maintenance/quality-report workflow. The user can upload a test file, search by title/file name, download it and update its current processing status (`RECEIVED`, `IN_REVIEW`, `PROCESSED`). This is not a full approval or audit-trail system.
 
-**Currently a development prototype:** no user accounts, authentication, HTTPS, or CSRF protection. It is intentionally bound to `127.0.0.1` and **must not be exposed to the public internet**. Use synthetic data only.
+**Security limitation:** No employee accounts, authentication, HTTPS or CSRF protection. Bind the server to `127.0.0.1`; **do not expose this prototype publicly**. Use only synthetic files.
 
-## Run locally on the Mac
+## Run locally
 
 From the repository root:
 
@@ -15,9 +15,7 @@ python -m pip install -r application/requirements.txt
 python application/app.py
 ```
 
-Then open `http://127.0.0.1:5000` in your browser.
-
-By default, application metadata is stored in `./var/docuworks.db` (SQLite), and document files in `./var/documents/`. These local files are development data and must not be committed to Git. The local backend lets you check the workflow before any AWS resources are deployed.
+Open `http://127.0.0.1:5000`. By default, SQLite metadata is saved in `./var/docuworks.db` and test document files in `./var/documents/`; both are ignored by Git. The local backend allows tests without AWS infrastructure.
 
 ## Run automated tests
 
@@ -25,22 +23,36 @@ By default, application metadata is stored in `./var/docuworks.db` (SQLite), and
 python -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
-The tests cover upload, download, search, status change, invalid inputs and persistence across app initialization. This is **not** an EC2 replacement or EBS snapshot recovery test.
+Three local tests passed on 2026-11-15: the document workflow including a simulated app reinitialization, invalid status handling, and invalid upload rejection. This is **not** an EBS snapshot restore test.
 
-## AWS storage configuration (later deployment)
+## AWS deployment — manually configured on 2026-11-15
 
-For EC2, store the SQLite database on the mounted EBS data volume and use private S3 for document files:
+The application was deployed to an Amazon Linux 2023 EC2 instance using Python 3.12, Gunicorn 23 and systemd. The AWS foundation was created with Terraform, but installing the app, mounting EBS and creating `docuworks.service` were **manual** steps. A replacement instance cannot yet be rebuilt from Terraform alone.
+
+Runtime configuration on EC2:
 
 ```bash
+export AWS_DEFAULT_REGION=eu-central-1
 export DOCUWORKS_DATA_DIR=/data/docuworks
 export DOCUWORKS_STORAGE=s3
 export DOCUWORKS_S3_BUCKET=<bucket-name-from-terraform-output>
 ```
 
-The application uses `boto3`'s standard credential chain. On EC2, it should obtain credentials through the existing IAM instance profile. **Do not add access keys to source files.**
+- **SQLite metadata:** `/data/docuworks/docuworks.db`, on a dedicated 8 GB XFS EBS volume mounted at `/data`.
+- **Document objects:** `documents/<generated-id>` inside the private S3 bucket.
+- **Credentials:** `boto3` uses the EC2 IAM instance profile; no static AWS access keys are stored in the app.
+- **Service:** systemd runs Gunicorn bound to `127.0.0.1:5000`.
+- **Browser access:** the demonstration used authorized SSM port forwarding from Mac `localhost:8765` to the instance port 5000.
 
-We will add a secure entry point, service startup, EC2/EBS mount configuration, operational logs and a tested restore workflow in subsequent steps.
+On the EC2 instance, inspect the service using:
 
-## Design limitation worth documenting
+```bash
+systemctl status docuworks --no-pager
+sudo journalctl -u docuworks -n 50 --no-pager
+```
 
-The S3 object is uploaded before its SQLite metadata is committed. If that database transaction fails, the S3 object may remain without a metadata record. A production implementation should add reconciliation/cleanup, validation, authentication and other appropriate controls.
+The EC2 restart test verified that the data volume mounted automatically and that SQLite/S3 records remained available. A separate EBS snapshot was completed, but **actual recovery has not yet been tested**. CloudWatch logging and automatic Linux/application provisioning are pending.
+
+## Known application limitation
+
+The S3 object is uploaded before its SQLite metadata transaction commits. If the database write fails, an S3 object may exist without a database record. A production implementation needs reconciliation/cleanup, robust input validation, authorization and other controls. S3 versioning alone is not a complete backup strategy.

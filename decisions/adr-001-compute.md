@@ -1,7 +1,7 @@
 # ADR 001 — Compute platform
-**Status:** Proposed
+**Status:** Accepted — implemented in the AWS prototype on 2026-11-15
 
-**Context:** DocuWorks has a small existing Linux-based application on a physical server.
+**Context:** DocuWorks has a small existing application on a physical server.
 
 **Decision:** Use EC2 for the initial migration prototype.
 

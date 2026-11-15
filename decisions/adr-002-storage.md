@@ -1,5 +1,5 @@
 # ADR 002 — Separate storage responsibilities
-**Status:** Proposed
+**Status:** Accepted — implemented in the AWS prototype on 2026-11-15
 
 **Context:** The original platform stores application data and documents on one machine.
 

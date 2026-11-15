@@ -1,5 +1,5 @@
 # ADR 003 — Administration and access
-**Status:** Proposed
+**Status:** Accepted — implemented in the AWS prototype on 2026-11-15
 
 **Context:** Administrative access and customer documents must not be publicly exposed.
 

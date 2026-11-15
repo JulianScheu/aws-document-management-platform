@@ -20,6 +20,6 @@
 1. Restore SQLite from the completed EBS snapshot to a separate volume and verify records.
 2. Add CloudWatch metrics/logging with cost-aware configuration.
 3. Automate the EC2 software, EBS mount and systemd deployment to make rebuilds reproducible.
-4. Capture visual evidence, update final architecture using AWS icons, evaluate security/cost, finish DCI review materials.
+4. Supplement the existing four screenshots with recovery and monitoring evidence; update final architecture using AWS icons, evaluate security/cost, finish DCI review materials.
 
 **Scope limitation:** No public staff-facing app endpoint/authentication exists. The SSM tunnel is a temporary, restricted demo method; not a multi-employee access solution.

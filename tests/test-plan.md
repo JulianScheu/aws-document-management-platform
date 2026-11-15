@@ -20,8 +20,14 @@ Evidence below describes tests actually performed, not merely planned. All appli
 | T-14 | Automated Python tests | **PASS** — 3 unittest scenarios passed locally |
 | T-15 | Linux service availability | **PASS** — systemd active and Gunicorn returns HTTP 200 |
 
+## Captured visual evidence
+- [Browser application](../evidence/2026-11-15/01-docuworks-application.png): two synthetic documents and processing statuses
+- [EC2](../evidence/2026-11-15/02-ec2-instance.png): provisioned instance, deliberately stopped after testing
+- [S3](../evidence/2026-11-15/03-s3-documents.png): two document objects
+- [EBS snapshot](../evidence/2026-11-15/04-ebs-snapshot.png): backup marked completed
+
 ## Remaining evidence to capture
-- Screenshots: EC2 instance, EBS volume and mount, S3 object, browser workflow, Terraform apply and snapshot status
+- Terraform apply and EBS mount terminal evidence, if needed for final review
 - Recovery test using a separate restored EBS volume
 - CloudWatch monitoring and logs
 - Security negative test
